@@ -33,6 +33,11 @@ const schema = z.object({
   mark: z.string().max(50).trim()
 });
 
+const schemaPassword = z.object({
+  login: z.string().min(1).max(100).trim(),
+  mark: z.string().max(50).trim()
+});
+
 onMounted(() => {
   if (props.initialValues) {
     const initialValues = structuredClone(toRaw(props.initialValues))
@@ -68,7 +73,8 @@ const errors = ref<Record<string, unknown>>({});
 const onSubmit = debounce(() => {
   errors.value = {};
 
-  const validation = schema.safeParse(data.value);
+  const validation =  data.value.type == TypeRecordEnum.LDAP ? schemaPassword.safeParse(data.value) :
+    schema.safeParse(data.value);
 
   if (validation.success) {
 
